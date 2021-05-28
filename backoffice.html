@@ -51,23 +51,42 @@
           </head>
           <body>
             <nav class="navbar navbar-light bg-light">
-              <a class="navbar-brand">Navbar</a>
+              <a href="./index.html" class="navbar-brand">Home</a>
               <a href="./backoffice.html" class="navbar-brand">Backoffice</a>
             </nav>
 
 
             <div class="container">
-            <h1 class="mt-5">Products</h1>
+            <h1 class="mt-5">Add Products</h1>
             <hr>
-            <div class="card-columns">
-              <div class="card">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">Card title that wraps to a new line</h5>
-                  <p class="card-text">Thi content. This content is a little bit longer.</p>
+            <form>
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input  class="form-control" id="name" placeholder="Iphone 11">
                 </div>
-              </div>
-            </div>
+                <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <input  class="form-control" id="brand" placeholder="Apple">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" placeholder="1$">
+                </div>
+                <div class="form-group">
+                    <label for="imageUrl">Image URL</label>
+                    <input  class="form-control" id="imageUrl" placeholder="http://">
+                </div>
+            
+              
+                <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Description</label>
+                  <textarea class="form-control" id="description" rows="3"></textarea>
+                </div>
+                <div class="form-group d-flex justify-content-end">
+                   <button type="reset" class="btn btn-outline-dark w-25 mr-2">Reset</button>
+                   <button type="submit" class="btn btn-warning mr-2 w-25">Save</button>
+                  </div>
+              </form>
           </div>
         
             <!-- Optional JavaScript; choose one of the two! -->
@@ -83,36 +102,43 @@
                 "Content-Type" : "application/json",
                 "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGFlNWM1ZGNlYWY0ODAwMTVjOTE5NDEiLCJpYXQiOjE2MjIxOTY3ODQsImV4cCI6MTYyMzQwNjM4NH0.XcC-FRFT7sOVnTSn2LSO8c2STr5i9zbAbktqgHaUVq0"
               })
-              const getProdcts = (callback) =>{
-              fetch(BASE_URL, {headers: HEADERS})
+              const postProdcts = (product, callback) =>{
+              fetch(BASE_URL,
+              {headers: HEADERS,
+              method:'POST',
+              body:JSON.stringify(product)  })
                 .then(res=> res.json())
                 .then((data) => console.log(  data))
                 .catch((error) => callback(error, null))
             }
 
-            window.onload = function () {
-              getProdcts((error, data) => {
-                if(error){
-                  console.log({error});
-                }else{
-                  console.log({data})
-                  const content = document.querySelector('.card-columns')
-                  content.innerHTML=''
-                  data.forEach((product) => {
-                    content.innerHTML = 
-                    `<div class="card">
-                    <img src="${product.imageUrl}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title">${product.name}</h5>
-                      <p class="card-text"> ${product.description}</p>
-                    </div>
-                    </div>`
-                    
-                  });
-                }
-              })
-            }
+          
+            
 
+            const formSubmit = function (e) {
+                e.preventDefault()
+                const name = document.querySelector('#name').value
+                const brand = document.querySelector('#brand').value
+                const price = parseInt(document.querySelector('#price').value)
+                const imageUrl = document.querySelector('#imageUrl').value
+                const description = document.querySelector('#description').value
+                const product = {name, brand, imageUrl, price, description}
+                console.log({product})
+                postProdcts(product, (err, data)=>{
+                    if (err){
+                            console.log({err});
+                    }
+                    else{
+                        e.target.reset()
+                    }
+                }
+                )                
+                
+            }
+            window.onload = function() {
+                const form = document.querySelector('form')
+                form.onsubmit= formSubmit
+            }
             </script>
           </body>
         </html>
